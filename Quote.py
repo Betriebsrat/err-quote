@@ -1,19 +1,28 @@
+import logging
+import os
 import sqlite3
+
 from errbot import botcmd, BotPlugin
 
 
 class Quote(BotPlugin):
     """Simple sqlite based quote storage"""
+
     def activate(self):
-        self.con = sqlite3.connect('Quote.sqlite', check_same_thread=False)
+        QUOTE_DB = self.plugin_dir + os.sep + 'quote.sqlite'
+        if not os.path.exists(QUOTE_DB):
+            logging.warning('no database found, creating a new one')
+            open(QUOTE_DB, 'a').close()
+
+        self.con = sqlite3.connect('QUOTE_DB', check_same_thread=False)
         self.cur = self.con.cursor()
         self.cur.execute('''create table if not exists quotes (id integer primary key, quote text not null)''')
         self.con.commit()
         super(Quote, self).activate()
 
     def deactivate(self):
-       self.con.close()
-       super(Quote, self).deactivate()
+        self.con.close()
+        super(Quote, self).deactivate()
 
     @botcmd()
     def quote(self, msg, args):
