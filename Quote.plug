@@ -3,7 +3,7 @@ Name = Quote
 Module = Quote
 
 [Python]
-Version = 2+
+Version = 2.5+
 
 [Documentation]
 Description = Simple sqlite based quote storage
