@@ -55,26 +55,26 @@ class Quote(BotPlugin):
 
         return 'Added: %s.' % (args)
 
-    @botcmd()
+    @botcmd(split_args_with=None)
     def quote_del(self, msg, args):
         """Removes Quote from Database, usage: !quote del <id>"""
         if len(args) != 1:
             return "Usage: !quote del <id>"
 
-        self.cur.execute('''delete from quotes where id = ?''', (args,))
+        self.cur.execute('''delete from quotes where id = ?''', ([args[0]]),)
         self.con.commit()
 
-        return 'Removed: #%d.' % int(args)
+        return 'Removed: %s.' % args[0]
 
-    @botcmd()
+    @botcmd(split_args_with=None)
     def quote_get(self, msg, args):
         """Fetches Quote by ID, usage: !quote get <id>"""
         if len(args) != 1:
             return "Usage: !quote get <id>"
 
-        self.cur.execute('''select * from quotes where id = ?''', (args,))
+        self.cur.execute('''select * from quotes where id = ?''', ([args[0]]),)
         quote = self.cur.fetchone()
         if quote is None:
-            return 'Did not found a quote with id = %d.' % int(args)
+            return 'Did not found a quote with id = %s.' % args[0]
         else:
             return '[%d] %s' % (quote[0], quote[1])
