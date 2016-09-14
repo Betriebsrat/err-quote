@@ -31,33 +31,35 @@ class Quote(BotPlugin):
         if quote is not None:
             return '[%d] %s' % (quote[0], quote[1])
         else:
-            return 'No quotes added yet'
+            return 'Nothing added yet'
 
     @botcmd()
     def quote_find(self, msg, args):
-        """Searches quotes for strings, usage: !quote find <args>"""
-        if len(args) != 1:
+        """Searches for strings, usage: !quote find <args>"""
+        if args == '':
             return "Usage: !quote find <args>"
 
         self.cur.execute('''select * from quotes where quote like ? order by random() limit 1''', ('%' + args + '%',))
         quote = self.cur.fetchone()
         if quote is None:
-            return 'Did not found anything matching = %s.' % (args)
+            return 'Found no matches for: %s.' % (args)
         else:
             return '[%d] %s' % (quote[0], quote[1])
 
     @botcmd()
     def quote_add(self, msg, args):
         """Adds a new quote, usage: !quote add <string> """
+        if args == '':
+            return "Usage: !quote add <args>"
 
         self.cur.execute('''insert into quotes (quote) values (?)''', (args,))
         self.con.commit()
 
         return 'Added: %s.' % (args)
 
-    @botcmd(split_args_with=None)
+    @botcmd(split_args_with=None, admin_only=True)
     def quote_del(self, msg, args):
-        """Removes Quote from Database, usage: !quote del <id>"""
+        """Removes quote from database, usage: !quote del <id>"""
         if len(args) != 1:
             return "Usage: !quote del <id>"
 
@@ -68,13 +70,13 @@ class Quote(BotPlugin):
 
     @botcmd(split_args_with=None)
     def quote_get(self, msg, args):
-        """Fetches Quote by ID, usage: !quote get <id>"""
+        """Fetches quote by ID, usage: !quote get <id>"""
         if len(args) != 1:
             return "Usage: !quote get <id>"
 
         self.cur.execute('''select * from quotes where id = ?''', ([args[0]]),)
         quote = self.cur.fetchone()
         if quote is None:
-            return 'Did not found a quote with id = %s.' % args[0]
+            return 'No matches with id = %s.' % args[0]
         else:
             return '[%d] %s' % (quote[0], quote[1])
