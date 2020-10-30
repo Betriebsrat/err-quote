@@ -60,7 +60,8 @@ class Quote(BotPlugin):
         if args == '':
             return "Usage: !quote find <args>"
 
-        self.cur.execute("select * from quotes where quote like ? order by random() limit 1", ('%' + args + '%',))
+        self.cur.execute(
+            "select * from quotes where quote like ? order by random() limit 1", ('%' + args + '%',))
         quote = self.cur.fetchone()
         if quote is None:
             return 'Found no matches for: %s.' % args
@@ -89,8 +90,10 @@ class Quote(BotPlugin):
             return 'Usage !quote new'
         self.cur.execute("select * from quotes order by id desc limit 3")
         rows = self.cur.fetchall()
+        answer = ''
         for row in rows:
-            yield '[%d] %s' % (row[0], row[1])
+            answer += '[%d] %s\n' % (row[0], row[1])
+        return answer
 
     @botcmd(admin_only=True)
     def quote_add(self, msg, args):
@@ -98,7 +101,8 @@ class Quote(BotPlugin):
         if args == '':
             return "Usage: !quote add <args>"
         author = msg.frm.nick
-        self.cur.execute("insert into quotes (quote, author) values (?,?)", (args, author))
+        self.cur.execute(
+            "insert into quotes (quote, author) values (?,?)", (args, author))
         self.con.commit()
         return 'Added: %s.' % args
 
