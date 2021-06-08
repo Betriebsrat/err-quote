@@ -2,6 +2,7 @@ import logging
 import os
 import sqlite3
 from errbot import botcmd, BotPlugin
+import random
 
 
 class Quote(BotPlugin):
