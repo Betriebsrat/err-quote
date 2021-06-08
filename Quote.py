@@ -32,6 +32,12 @@ class Quote(BotPlugin):
         self.con.close()
         super(Quote, self).deactivate()
 
+    @staticmethod
+    def respond_random():
+        responders = ['Sure.', 'Alright.',
+                      'No problem.', 'Will do.', 'Okay.', 'Logen.']
+        return random.choice(responders)
+
     @botcmd()
     def quote(self, msg, args):
         """ Returns random quote, usage: !quote"""
@@ -104,7 +110,7 @@ class Quote(BotPlugin):
         self.cur.execute(
             "insert into quotes (quote, author) values (?,?)", (args, author))
         self.con.commit()
-        return 'Added: %s.' % args
+        return self.respond_random()
 
     @botcmd(admin_only=True)
     def quote_del(self, msg, args):
@@ -113,4 +119,4 @@ class Quote(BotPlugin):
             return "Usage: !quote del <id>"
         self.cur.execute("delete from quotes where id = ?", (args,))
         self.con.commit()
-        return 'Removed: %s.' % args
+        return self.respond_random()
